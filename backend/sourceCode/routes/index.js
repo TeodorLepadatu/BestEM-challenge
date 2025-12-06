@@ -39,6 +39,7 @@ async function startServer() {
             console.log(`   - Home:     http://localhost:${PORT}/home`);
             console.log(`   - Login:    http://localhost:${PORT}/login (POST)`);
             console.log(`   - Register: http://localhost:${PORT}/register (POST)`);
+            console.log('   -Profile:  http://localhost:${PORT}/profile (POST)\n');
         });
 
     } catch (err) {

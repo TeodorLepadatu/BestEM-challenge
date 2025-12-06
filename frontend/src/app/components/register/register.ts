@@ -7,12 +7,12 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink], 
   templateUrl: './register.html',
   styleUrls: ['./register.css']
 })
 export class RegisterComponent {
-  // Initialize all fields required by your Joi schema
+  // 1. Define the User Object
   user = {
     firstName: '',
     lastName: '',
@@ -23,18 +23,35 @@ export class RegisterComponent {
     password: ''
   };
 
+  // 2. Define the missing properties explicitly
+  errorMessage: string = '';
+  isLoading: boolean = false;
+
   constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit() {
+    this.isLoading = true;   
+    this.errorMessage = ''; 
+
     this.authService.register(this.user).subscribe({
       next: (response) => {
+        this.isLoading = false;
         console.log('Registration successful', response);
+        alert('Registration successful! Please log in.');
         this.router.navigate(['/login']);
       },
       error: (error) => {
-        // This will now catch the Joi validation error from the backend
+        this.isLoading = false; 
         console.error('Registration failed', error);
-        alert(error.error.message || 'Registration failed!');
+
+        // Handle different error structures
+        if (error.error && error.error.message) {
+          this.errorMessage = error.error.message;
+        } else if (error.error && error.error.error) {
+           this.errorMessage = error.error.error;
+        } else {
+          this.errorMessage = 'Registration failed. Please try again.';
+        }
       }
     });
   }

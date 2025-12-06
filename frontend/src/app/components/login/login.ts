@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router'; // 1. Import Router
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -16,20 +16,46 @@ export class LoginComponent {
     email: '',
     password: ''
   };
+  
+  errorMessage: string = '';
+  isLoading: boolean = false;
 
+  // 2. Inject Router in the constructor
   constructor(private authService: AuthService, private router: Router) {}
 
-  onLogin() {
+  onSubmit() {
+    this.isLoading = true;
+    this.errorMessage = '';
+
     this.authService.login(this.credentials).subscribe({
-      next: (response) => {
-        console.log('Login successful', response);
-        // Save the token if your backend sends one
-        localStorage.setItem('token', response.token); 
-        this.router.navigate(['/home']);
+      next: (response: any) => {
+        this.isLoading = false;
+        
+        // --- CRITICAL STEP START ---
+        
+        // 1. Debug: Check exactly what the backend sent
+        console.log('Backend Response:', response);
+
+        // 2. Extract the token (Check your console log if 'token' is the wrong name!)
+        const token = response.token || response.accessToken || response.jwt;
+
+        if (token) {
+           // 3. Save the token
+           localStorage.setItem('token', token);
+           
+           // 4. Navigate to Chat
+           console.log('Navigating to chat...');
+           this.router.navigate(['/chat']); 
+        } else {
+           this.errorMessage = 'Login successful, but no token received.';
+        }
+        
+        // --- CRITICAL STEP END ---
       },
       error: (error) => {
-        console.error('Login failed', error);
-        alert('Invalid credentials');
+        this.isLoading = false;
+        console.error(error);
+        this.errorMessage = 'Invalid email or password';
       }
     });
   }

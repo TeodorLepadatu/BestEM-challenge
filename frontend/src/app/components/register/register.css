@@ -123,3 +123,46 @@ input:focus {
     grid-template-columns: 1fr; /* Stack inputs on mobile */
   }
 }
+
+.error-alert {
+  background-color: #fee2e2;
+  color: #dc2626;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Invalid Input State */
+input.invalid {
+  border-color: #dc2626;
+  background-color: #fff5f5;
+}
+
+input.invalid:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+  border-color: #dc2626;
+}
+
+/* Validation Message Text */
+.validation-error {
+  color: #dc2626;
+  font-size: 0.8rem;
+  margin-top: 4px;
+  margin-left: 2px;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Disable button style */
+.submit-btn:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+  transform: none;
+}

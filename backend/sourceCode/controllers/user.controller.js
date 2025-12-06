@@ -1,6 +1,7 @@
 const Joi = require('joi');
 const AuthService = require("../services/auth.service");
 
+// Validation Schema
 const registerSchema = Joi.object({
     email: Joi.string().email().required(),
     firstName: Joi.string().required(),
@@ -13,25 +14,26 @@ const registerSchema = Joi.object({
 
 const UserController = {
 
+    // --- 1. Login User ---
     loginUser: async (req, res) => {
         try {
-            const { email, password } = req.body; // Changed username to email to match register schema
+            const { email, password } = req.body; 
 
-            // 1. Find user in the actual Database
+            // Find user in the Database
             const user = await AuthService.findUserByEmail(email);
 
             if (!user) {
                 return res.status(401).send('Invalid email or password');
             }
 
-            // 2. Compare the provided password with the stored hash
+            // Compare password
             const isPasswordValid = await AuthService.validatePassword(password, user.password);
 
             if (!isPasswordValid) {
                 return res.status(401).send('Invalid email or password');
             }
 
-            // 3. Generate Token
+            // Generate Token
             const token = AuthService.signJWT(user);
 
             res.status(200).json({ message: 'User logged in!', token });
@@ -42,6 +44,7 @@ const UserController = {
         }
     },
 
+    // --- 2. Register User ---
     registerUser: async (req, res) => {
         try {
             const { error, value } = registerSchema.validate(req.body);
@@ -50,14 +53,14 @@ const UserController = {
                 return res.status(400).send({ error: error.details[0].message });
             }
 
-            // Check if user exists using the DB method
+            // Check if user exists
             const userExists = await AuthService.findUserByEmail(value.email);
             
             if (userExists) {
                 return res.status(409).send({ message: 'An account with this email already exists' });
             }
 
-            // Create user (hashing happens inside AuthService now)
+            // Create user
             await AuthService.createUser({
                 ...value,
                 createdAt: new Date().toISOString() 
@@ -67,6 +70,55 @@ const UserController = {
 
         } catch (err) {
             console.error(err);
+            res.status(500).send({ error: 'Internal Server Error' });
+        }
+    },
+    
+    // --- 3. Get Profile (FIXED) ---
+   // In user.controller.js
+
+getUserProfile: async (req, res) => {
+        console.log("👉 1. Profile route hit!"); 
+
+        try {
+            const authHeader = req.headers.authorization;
+            if (!authHeader) return res.status(401).send({ error: 'No token' });
+
+            const token = authHeader.split(' ')[1];
+            let decoded;
+            try {
+                decoded = AuthService.verifyJWT(token);
+            } catch (e) {
+                return res.status(401).send({ error: 'Invalid token' });
+            }
+
+            console.log("👉 3. Token verified for:", decoded.email);
+
+            const user = await AuthService.findUserByEmail(decoded.email);
+            if (!user) return res.status(404).send({ error: 'User not found' });
+
+            // --- THE FIX: EVERYTHING IS A STRING ---
+            // We force String() on every single field. 
+            // This guarantees the result is just plain text, which cannot crash.
+            const safeUserProfile = {
+                _id: String(user._id),
+                email: String(user.email || ""),
+                firstName: String(user.firstName || ""),
+                lastName: String(user.lastName || ""),
+                phoneNumber: String(user.phoneNumber || ""),
+                address: String(user.address || ""),
+                // We convert dates to strings manually to prevent Date object crashes
+                dateOfBirth: String(user.dateOfBirth || ""), 
+                createdAt: String(user.createdAt || "")
+            };
+            
+            // LOOK FOR THIS LOG IN YOUR TERMINAL
+            console.log("👉 6. FINAL SAFE CHECK - Sending:", safeUserProfile);
+            
+            return res.status(200).json(safeUserProfile);
+
+        } catch (err) {
+            console.error("❌ CRASH REPORT:", err);
             res.status(500).send({ error: 'Internal Server Error' });
         }
     }

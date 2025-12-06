@@ -16,18 +16,6 @@ export class App implements OnInit {
   message = ''; 
 
   ngOnInit() {
-    this.http.get<any>('http://localhost:3000/api/message')
-      .subscribe({
-        next: (response) => {
-          this.message = response.message;
-          
-          // 3. Force Angular to update the screen
-          this.cdr.detectChanges(); 
-          console.log('Screen updated with:', this.message);
-        },
-        error: (error) => {
-          console.error('Error:', error);
-        }
-      });
+    
   }
 }
