@@ -1,0 +1,109 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h2>Create Account</h2>
+      <p>Join MedHelp for AI-powered health assistance</p>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-alert">
+      {{ errorMessage }}
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" name="firstName" 
+                 [(ngModel)]="user.firstName" #firstName="ngModel" required 
+                 [class.invalid]="firstName.invalid && (firstName.dirty || firstName.touched)">
+          
+          <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)" class="validation-error">
+            First name is required.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName" name="lastName" 
+                 [(ngModel)]="user.lastName" #lastName="ngModel" required
+                 [class.invalid]="lastName.invalid && (lastName.dirty || lastName.touched)">
+          
+          <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="validation-error">
+            Last name is required.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" 
+                 [(ngModel)]="user.email" #email="ngModel" required email
+                 [class.invalid]="email.invalid && (email.dirty || email.touched)">
+          
+          <div *ngIf="email.invalid && (email.dirty || email.touched)" class="validation-error">
+            <span *ngIf="email.errors?.['required']">Email is required.</span>
+            <span *ngIf="email.errors?.['email']">Please enter a valid email address.</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" name="phoneNumber" 
+                 [(ngModel)]="user.phoneNumber" #phone="ngModel" required pattern="^[0-9]{10}$"
+                 [class.invalid]="phone.invalid && (phone.dirty || phone.touched)">
+          
+          <div *ngIf="phone.invalid && (phone.dirty || phone.touched)" class="validation-error">
+             <span *ngIf="phone.errors?.['required']">Phone number is required.</span>
+             <span *ngIf="phone.errors?.['pattern']">Must be exactly 10 digits.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="dob">Date of Birth</label>
+          <input type="date" id="dob" name="dateOfBirth" 
+                 [(ngModel)]="user.dateOfBirth" #dob="ngModel" required
+                 [class.invalid]="dob.invalid && (dob.dirty || dob.touched)">
+          
+          <div *ngIf="dob.invalid && (dob.dirty || dob.touched)" class="validation-error">
+            Date of birth is required.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="address">Address</label>
+          <input type="text" id="address" name="address" 
+                 [(ngModel)]="user.address" #address="ngModel" required
+                 [class.invalid]="address.invalid && (address.dirty || address.touched)">
+           
+           <div *ngIf="address.invalid && (address.dirty || address.touched)" class="validation-error">
+            Address is required.
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" 
+               [(ngModel)]="user.password" #password="ngModel" required minlength="8"
+               [class.invalid]="password.invalid && (password.dirty || password.touched)">
+        
+        <div *ngIf="password.invalid && (password.dirty || password.touched)" class="validation-error">
+          <span *ngIf="password.errors?.['required']">Password is required.</span>
+          <span *ngIf="password.errors?.['minlength']">Password must be at least 8 characters.</span>
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="!registerForm.form.valid || isLoading" class="submit-btn">
+        {{ isLoading ? 'Registering...' : 'Register Now' }}
+      </button>
+      
+      <p class="auth-footer">
+        Already have an account? <a routerLink="/login">Log in here</a>
+      </p>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,62 @@
+<div class="page-container">
+  
+  <header class="chat-header">
+    <div class="logo-area">
+      <h2>MedHelp AI Chat</h2>
+    </div>
+
+    <div class="profile-menu">
+      <div class="avatar-circle" (click)="toggleDropdown()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
+
+      <div class="dropdown-content" *ngIf="isDropdownOpen">
+        <a (click)="goToProfile()">My Profile</a>
+        <div class="divider"></div>
+        <a (click)="logout()" class="danger-text">Logout</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="chat-window" #scrollContainer>
+    
+    <div *ngFor="let msg of messages" 
+         [ngClass]="{'message-row-user': msg.sender === 'user', 'message-row-bot': msg.sender === 'bot'}">
+      
+      <div *ngIf="msg.sender === 'bot'" class="bot-avatar">🤖</div>
+
+      <div class="message-bubble">
+        {{ msg.text }}
+        <span class="timestamp">{{ msg.timestamp | date:'shortTime' }}</span>
+      </div>
+    </div>
+
+    <div *ngIf="isTyping" class="message-row-bot">
+      <div class="bot-avatar">🤖</div>
+      <div class="message-bubble typing">
+        <span>.</span><span>.</span><span>.</span>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="input-area">
+    <div class="input-wrapper">
+      <input type="text" 
+             [(ngModel)]="newMessage" 
+             (keyup.enter)="sendMessage()" 
+             placeholder="Type your health question here...">
+      
+      <button (click)="sendMessage()" [disabled]="!newMessage.trim()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+  </footer>
+
+</div>

@@ -1,0 +1,53 @@
+<div class="profile-container">
+  
+  <div *ngIf="isLoading" class="loading-spinner">
+    Loading Profile...
+  </div>
+
+  <div *ngIf="errorMessage" class="error-alert">
+    {{ errorMessage }}
+    <button (click)="goBack()">Go Back</button>
+  </div>
+
+  <div *ngIf="!isLoading && user" class="profile-card">
+    <div class="card-header">
+      <div class="avatar-large">
+        {{ user.firstName?.charAt(0) }}{{ user.lastName?.charAt(0) }}
+      </div>
+      <h2>{{ user.firstName }} {{ user.lastName }}</h2>
+      <p class="role-badge">Member</p>
+    </div>
+
+    <div class="card-body">
+      <div class="info-group">
+        <label>Email Address</label>
+        <p>{{ user.email }}</p>
+      </div>
+
+      <div class="info-group">
+        <label>Phone Number</label>
+        <p>{{ user.phoneNumber }}</p>
+      </div>
+
+      <div class="info-group">
+        <label>Date of Birth</label>
+        <p>{{ user.dateOfBirth | date:'longDate' }}</p>
+      </div>
+
+      <div class="info-group">
+        <label>Address</label>
+        <p>{{ user.address }}</p>
+      </div>
+      
+      <div class="info-group">
+        <label>Member Since</label>
+        <p>{{ user.createdAt | date:'mediumDate' }}</p>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <button class="btn-back" (click)="goBack()">Back to Chat</button>
+      <button class="btn-logout" (click)="logout()">Logout</button>
+    </div>
+  </div>
+</div>
