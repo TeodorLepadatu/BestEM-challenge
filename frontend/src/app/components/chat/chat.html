@@ -2,7 +2,7 @@
   
   <header class="chat-header">
     <div class="logo-area">
-      <h2>MedHelp AI Chat</h2>
+      <h2>MedHelp AI Triage</h2>
     </div>
 
     <div class="profile-menu">
@@ -23,6 +23,12 @@
 
   <main class="chat-window" #scrollContainer>
     
+    <div *ngIf="messages.length === 0" class="empty-state">
+      <div class="bot-avatar-large">🤖</div>
+      <h3>How can I help you today?</h3>
+      <p>Describe your symptoms to start the assessment.</p>
+    </div>
+
     <div *ngFor="let msg of messages" 
          [ngClass]="{'message-row-user': msg.sender === 'user', 'message-row-bot': msg.sender === 'bot'}">
       
@@ -30,7 +36,7 @@
 
       <div class="message-bubble">
         {{ msg.text }}
-        <span class="timestamp">{{ msg.timestamp | date:'shortTime' }}</span>
+        <span class="timestamp" *ngIf="msg.timestamp">{{ msg.timestamp | date:'shortTime' }}</span>
       </div>
     </div>
 
@@ -48,9 +54,10 @@
       <input type="text" 
              [(ngModel)]="newMessage" 
              (keyup.enter)="sendMessage()" 
-             placeholder="Type your health question here...">
+             placeholder="Type your symptoms here..."
+             [disabled]="isDiagnosisComplete">
       
-      <button (click)="sendMessage()" [disabled]="!newMessage.trim()">
+      <button (click)="sendMessage()" [disabled]="!newMessage.trim() || isDiagnosisComplete">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="22" y1="2" x2="11" y2="13"></line>
           <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>

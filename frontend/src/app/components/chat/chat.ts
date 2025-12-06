@@ -1,13 +1,13 @@
-import { Component, ElementRef, ViewChild, AfterViewChecked } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewChecked, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { TriageService } from '../../services/triage.service';
 
 interface ChatMessage {
-  text: string;
   sender: 'user' | 'bot';
-  timestamp: Date;
+  text: string;
+  timestamp: string; 
 }
 
 @Component({
@@ -17,21 +17,30 @@ interface ChatMessage {
   templateUrl: './chat.html',
   styleUrls: ['./chat.css']
 })
-export class ChatComponent implements AfterViewChecked {
+export class ChatComponent implements OnInit, AfterViewChecked {
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   
+  messages: ChatMessage[] = [];
   newMessage: string = '';
+  
+  // We keep this to track the CURRENT session in the DB, 
+  // but we don't show the list anymore.
+  currentConversationId: string | null = null;
+  
+  isTyping: boolean = false;
   isDropdownOpen: boolean = false;
-  isTyping: boolean = false; // To show "AI is typing..."
+  isDiagnosisComplete: boolean = false;
 
-  // Initial Message
-  messages: ChatMessage[] = [
-    { text: 'Hello! I am your AI health assistant. How can I help you today?', sender: 'bot', timestamp: new Date() }
-  ];
+  constructor(
+    private triageService: TriageService,
+    private router: Router
+  ) {}
 
-  constructor(private authService: AuthService, private router: Router) {}
+  ngOnInit() {
+    // We no longer load the history list here.
+    // The chat starts fresh every time you refresh the page.
+  }
 
-  // Auto-scroll to bottom whenever a new message is added
   ngAfterViewChecked() {
     this.scrollToBottom();
   }
@@ -42,40 +51,106 @@ export class ChatComponent implements AfterViewChecked {
     } catch(err) { }
   }
 
-  toggleDropdown() {
-    this.isDropdownOpen = !this.isDropdownOpen;
+  toggleDropdown() { this.isDropdownOpen = !this.isDropdownOpen; }
+  
+  goToProfile() { 
+    this.router.navigate(['/profile']); 
+  }
+  
+  logout() { 
+    localStorage.clear(); 
+    this.router.navigate(['/login']); 
   }
 
   sendMessage() {
-    if (this.newMessage.trim() === '') return;
+    if (!this.newMessage.trim() || this.isDiagnosisComplete) return;
 
-    // 1. Add User Message
+    const textToSend = this.newMessage;
+    this.newMessage = ''; 
+
+    // Optimistically add to UI
     this.messages.push({
-      text: this.newMessage,
       sender: 'user',
-      timestamp: new Date()
+      text: textToSend,
+      timestamp: new Date().toISOString()
     });
 
-    const userQuery = this.newMessage; // Store for API call later
-    this.newMessage = ''; // Clear input
-    this.isTyping = true; // Show loader
+    this.isTyping = true;
 
-    // 2. Simulate AI API Call (Replace this setTimeout with real HTTP call later)
-    setTimeout(() => {
+    // Send to backend
+    this.triageService.sendMessage(textToSend, this.currentConversationId).subscribe({
+      next: (response) => {
+        this.isTyping = false;
+        
+        // If this was the first message, the server created a new ID.
+        // We save it so subsequent messages belong to the same session.
+        if (!this.currentConversationId && response.conversation_id) {
+          this.currentConversationId = response.conversation_id;
+        }
+
+        this.handleAiResponse(response);
+      },
+      error: (err) => {
+        this.isTyping = false;
+        console.error(err);
+        this.messages.push({
+          sender: 'bot',
+          text: "Connection error. Please try again.",
+          timestamp: new Date().toISOString()
+        });
+      }
+    });
+  }
+
+  private handleAiResponse(response: any) {
+    if (response.error) {
       this.messages.push({
-        text: `I received your message: "${userQuery}". This is a placeholder for the AI response.`,
         sender: 'bot',
-        timestamp: new Date()
+        text: `System Error: ${response.error}`,
+        timestamp: new Date().toISOString()
       });
-      this.isTyping = false;
-    }, 1500); // Faking a 1.5 second delay
-  }
+      return;
+    }
 
-  goToProfile() {
-    this.router.navigate(['/profile']); // You will need to create this route later
-  }
+    try {
+      const aiData = JSON.parse(response.gpt_json);
+      const nextQuestion = aiData.next_question;
 
-  logout() {
-    this.authService.logout();
+      if (nextQuestion === 'DIAGNOSIS_COMPLETE') {
+        this.isDiagnosisComplete = true;
+        
+        let finalReport = "📋 **FINAL MEDICAL ANALYSIS**\n\n";
+        
+        if (aiData.candidates) {
+          finalReport += "Top Suspected Conditions:\n";
+          const sorted = aiData.candidates.sort((a: any, b: any) => b.probability - a.probability);
+          sorted.forEach((c: any) => {
+            const pct = Math.round(c.probability * 100);
+            finalReport += `• ${c.condition} (${pct}%)\n`;
+          });
+        }
+        finalReport += `\n💡 **ADVICE:**\n${aiData.top_recommendation}`;
+
+        this.messages.push({
+          sender: 'bot',
+          text: finalReport,
+          timestamp: new Date().toISOString()
+        });
+
+      } else {
+        this.messages.push({
+          sender: 'bot',
+          text: nextQuestion,
+          timestamp: new Date().toISOString()
+        });
+      }
+    } catch (e) {
+      console.error("Error parsing JSON", e);
+      this.messages.push({
+        sender: 'bot',
+        text: "Error processing the medical analysis.",
+        timestamp: new Date().toISOString()
+      });
+    }
   }
 }
