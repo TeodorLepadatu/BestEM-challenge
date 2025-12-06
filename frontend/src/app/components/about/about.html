@@ -1,1 +1,32 @@
-<p>about works!</p>
+<div class="about-container">
+  
+  <header class="about-header">
+    <div class="logo-box">
+        <span class="logo">MedHelp<span class="dot">.</span></span>
+        <h1>Our Mission & Values</h1>
+    </div>
+    <p class="tagline">Providing accessible, intelligent, and compassionate preliminary health guidance powered by AI.</p>
+  </header>
+
+  <section class="mission-statement">
+    <h2>Social Mission</h2>
+    <p>{{ mission }}</p>
+  </section>
+
+  <section class="values-section">
+    <h2>Core Values</h2>
+    <div class="values-grid">
+      
+      <div *ngFor="let value of values" class="value-card">
+        <div class="value-icon">{{ value.icon }}</div>
+        <h3>{{ value.title }}</h3>
+        <p>{{ value.description }}</p>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="about-footer">
+    <p>Committed to advancing global health equity through technology.</p>
+  </footer>
+</div>
