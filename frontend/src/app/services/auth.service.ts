@@ -93,6 +93,11 @@ export class AuthService {
     return this.http.get(`${this.apiUrl}/partners/dashboard`, { headers: this.getAuthHeaders() });
   }
 
+  getPrediction(disease: string): Observable<any> {
+  const payload = { disease };
+  return this.http.post(`${this.apiUrl}/partners/predict`, payload, { headers: this.getAuthHeaders() });
+}
+
   // THE TIMER
   private autoLogout(expirationDuration: number) {
     console.log(`Session timer started for ${expirationDuration}ms`);

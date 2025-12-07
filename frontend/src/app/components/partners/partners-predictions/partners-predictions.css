@@ -1,0 +1,132 @@
+.predictions-container {
+  min-height: 100vh;
+  padding: 40px;
+  background-color: #f0f2f5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.card-wrapper {
+  background: white;
+  width: 100%;
+  max-width: 800px;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+header h1 {
+  color: #2c3e50;
+  margin: 0 0 10px 0;
+}
+
+header p {
+  color: #7f8c8d;
+  margin: 0 0 30px 0;
+}
+
+/* Input Section */
+.input-section {
+  margin-bottom: 30px;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  color: #34495e;
+  margin-bottom: 8px;
+}
+
+.input-group {
+  display: flex;
+  gap: 15px;
+}
+
+input {
+  flex-grow: 1;
+  padding: 12px 15px;
+  border: 1px solid #bdc3c7;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+input:focus {
+  border-color: #2c3e50;
+  outline: none;
+}
+
+.generate-btn {
+  background-color: #2980b9;
+  color: white;
+  border: none;
+  padding: 0 25px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.generate-btn:hover {
+  background-color: #1a5276;
+}
+
+.generate-btn:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+/* Results */
+.results-section {
+  margin-top: 30px;
+  padding-top: 30px;
+  border-top: 1px solid #ecf0f1;
+  animation: fadeIn 0.5s ease-in;
+}
+
+.stat-box {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.stat-box h3 {
+  color: #7f8c8d;
+  font-size: 1rem;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.big-number {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: #2c3e50;
+}
+
+.plot-box {
+  text-align: center;
+}
+
+.plot-box h3 {
+  color: #34495e;
+  margin-bottom: 15px;
+}
+
+.plot-box img {
+  max-width: 100%;
+  border-radius: 8px;
+  border: 1px solid #bdc3c7;
+}
+
+.alert.error {
+  background-color: #fde8e8;
+  color: #c0392b;
+  padding: 15px;
+  border-radius: 6px;
+  margin-top: 20px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -13,5 +13,6 @@ router.post('/login', PartnersController.loginPartner);
 // Get Dashboard Data (Protected)
 // Endpoint: GET /api/partners/dashboard
 router.get('/dashboard', PartnersController.getPartnerDashboard);
+router.post('/predict', PartnersController.generatePrediction);
 
 module.exports = router;

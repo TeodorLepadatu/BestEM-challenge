@@ -1,1 +1,49 @@
-<p>partners-predictions works!</p>
+<div class="predictions-container">
+  <div class="card-wrapper">
+    
+    <header>
+      <h1>Disease Trend Prediction</h1>
+      <p>Select a condition to generate AI-driven forecasts for the upcoming week.</p>
+    </header>
+
+    <div class="input-section">
+      <label for="diseaseInput">Target Condition</label>
+      <div class="input-group">
+        <input 
+          type="text" 
+          id="diseaseInput" 
+          list="diseaseList"
+          [(ngModel)]="selectedDisease" 
+          placeholder="e.g. Influenza"
+          [disabled]="isLoading"
+        >
+        <datalist id="diseaseList">
+          <option *ngFor="let disease of commonDiseases" [value]="disease"></option>
+        </datalist>
+
+        <button class="generate-btn" (click)="generatePrediction()" [disabled]="!selectedDisease || isLoading">
+          {{ isLoading ? 'Processing...' : 'Generate Prediction' }}
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert error">
+      {{ errorMessage }}
+    </div>
+
+    <div *ngIf="predictionResult !== null" class="results-section">
+      
+      <div class="stat-box">
+        <h3>Predicted Cases (Next Week)</h3>
+        <div class="big-number">{{ predictionResult }}</div>
+      </div>
+
+      <div class="plot-box" *ngIf="predictionImage">
+        <h3>Trend Analysis Plot</h3>
+        <img [src]="predictionImage" alt="Prediction Plot">
+      </div>
+
+    </div>
+
+  </div>
+</div>
