@@ -45,7 +45,7 @@ export class LoginComponent {
            
            // 4. Navigate to Chat
            console.log('Navigating to chat...');
-           this.router.navigate(['/dashbord']); 
+           this.router.navigate(['/dashboard']); 
         } else {
            this.errorMessage = 'Login successful, but no token received.';
         }
