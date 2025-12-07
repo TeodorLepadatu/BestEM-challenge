@@ -1,0 +1,174 @@
+/* Page Layout */
+.history-container {
+  min-height: 100vh;
+  background-color: #f5f7fb;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 40px 20px;
+}
+
+.page-header {
+  max-width: 800px;
+  margin: 0 auto 40px auto;
+}
+
+.page-header h1 {
+  color: #2c3e50;
+  font-size: 2rem;
+  margin: 10px 0;
+}
+
+.page-header p {
+  color: #64748b;
+}
+
+.back-link {
+  color: #0056b3;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.back-link:hover { text-decoration: underline; }
+
+/* Timeline / List */
+.timeline {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* Card Style */
+.report-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  transition: transform 0.2s;
+}
+
+.report-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+}
+
+/* Card Header */
+.card-header {
+  background-color: #f8fafc;
+  padding: 15px 25px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.date-badge {
+  font-weight: 700;
+  color: #334155;
+  font-size: 1.05rem;
+}
+
+.time-badge {
+  font-size: 0.85rem;
+  color: #64748b;
+  background: #e2e8f0;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* Card Body */
+.card-body {
+  padding: 25px;
+}
+
+/* Diagnosis Section */
+.diagnosis-section {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+h4 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #94a3b8;
+  margin: 0 0 10px 0;
+}
+
+.primary-condition {
+  font-size: 1.4rem;
+  color: #0056b3; /* Medical Blue */
+  font-weight: 600;
+}
+
+.secondary-conditions {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+.secondary-conditions .label {
+  margin-right: 5px;
+}
+
+.secondary-conditions .condition {
+  color: #475569;
+  font-weight: 500;
+}
+
+/* Recommendation Section */
+.recommendation-section p {
+  color: #334155;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #64748b;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  opacity: 0.5;
+}
+
+.cta-btn {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #0056b3;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+/* Loading Spinner */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 50px;
+  color: #64748b;
+}
+
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #0056b3;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

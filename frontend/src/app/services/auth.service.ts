@@ -8,7 +8,7 @@ import { HttpHeaders } from '@angular/common/http'; // Make sure to import this 
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000';
+  private apiUrl = 'http://127.0.0.1:3000';
   private tokenTimer: any; // Variable to hold the timer
 
   constructor(private http: HttpClient, private router: Router) {}

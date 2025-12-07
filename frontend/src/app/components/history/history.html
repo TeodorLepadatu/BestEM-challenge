@@ -1,1 +1,61 @@
-<p>history works!</p>
+<div class="history-container">
+  
+  <header class="page-header">
+    <a [routerLink]="['/dashboard']" class="back-link">← Back to Dashboard</a>
+    <h1>Medical History</h1>
+    <p>A chronological record of your AI triage assessments.</p>
+  </header>
+
+  <div class="content-area">
+    
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading records...</p>
+    </div>
+
+    <div *ngIf="!isLoading && reports.length === 0" class="empty-state">
+      <div class="empty-icon">📂</div>
+      <h3>No records found</h3>
+      <p>You haven't completed any triage sessions yet.</p>
+      <a routerLink="/chat" class="cta-btn">Start New Assessment</a>
+    </div>
+
+    <div *ngIf="!isLoading && reports.length > 0" class="timeline">
+      
+      <div *ngFor="let report of reports" class="report-card">
+        <div class="card-header">
+          <span class="date-badge">
+            {{ report.report_date | date:'mediumDate' }}
+          </span>
+          <span class="time-badge">
+            {{ report.report_date | date:'shortTime' }}
+          </span>
+        </div>
+
+        <div class="card-body">
+          <div class="diagnosis-section">
+            <h4>Primary Diagnosis</h4>
+            <div class="primary-condition">
+              {{ report.final_diagnostic.most_probable_diagnostic }}
+            </div>
+
+            <div class="secondary-conditions" 
+                 *ngIf="report.final_diagnostic.second_most_probable !== 'None'">
+              <span class="label">Alternatives:</span>
+              <span class="condition">{{ report.final_diagnostic.second_most_probable }}</span>
+              <span class="condition" *ngIf="report.final_diagnostic.third_most_probable !== 'None'">
+                , {{ report.final_diagnostic.third_most_probable }}
+              </span>
+            </div>
+          </div>
+
+          <div class="recommendation-section">
+            <h4>Recommendation</h4>
+            <p>{{ report.recommendation }}</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

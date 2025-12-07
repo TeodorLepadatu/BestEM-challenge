@@ -119,7 +119,7 @@ getUserProfile: async (req, res) => {
                 height: String(user.height || ""),
                 country: String(user.country || ""),
                 sex: String(user.sex || ""),
-                previousConditions: String(user.previousConditions || ""),
+                previous_conversations: user.previous_conversations || [],
                 familyConditions: String(user.familyConditions || "")
             };
             
